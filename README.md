@@ -11,7 +11,8 @@ This does require that nodeJS and gruntjs be installed.
 
 ```sh
 $ git clone git://github.com/jthoms1/todomvc-grunt.git
-# install dependent packages
+# install dependent plugins
+$ cd todomvc-grunt
 $ npm install
 ```
 
@@ -26,5 +27,5 @@ $ npm install
 * Uses grunt-reload to do live page reloads
 
 
-[todoMVC]: http://addyosmani.github.com/todomv
+[todoMVC]: http://addyosmani.github.com/todomvc
 [grunt]: https://github.com/gruntjs/grunt
