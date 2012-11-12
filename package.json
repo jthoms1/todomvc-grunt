@@ -1,0 +1,12 @@
+{
+  "name": "todomvc",
+  "description": "This is just an example project to show grunt with mvc javascript.",
+  "version": "0.1.0",
+  "homepage": "http://fifty-ten.com/todomvc",
+  "author": "Josh Thomas",
+  "devDependencies": {
+    "grunt-contrib" : "https://github.com/jthoms1/grunt-contrib/tarball/master",
+    "grunt-recess" : "https://github.com/jthoms1/grunt-recess/tarball/master",
+    "grunt-reload" : "~0.2.0"
+  }
+}
