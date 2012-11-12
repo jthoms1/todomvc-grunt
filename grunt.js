@@ -145,12 +145,12 @@ module.exports = function (grunt) {
         // Configuration for grunt-reload. Enabling live-reload within browser.
         reload: {
             liveReload: {
-                port: 35729, // LR default
+                port: 35729, // default port for Live Reload browser plugins
                 liveReload: {
-                    apply_css_live: true,
-                    apply_images_live: true
+                    apply_css_live: true,    // Won't actually work until grunt 0.4 is released
+                    apply_images_live: true  // Won't actually work until grunt 0.4 is released
                 }
-            }
+            }  
         },
         server: {
             port: 9999
@@ -180,9 +180,38 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-reload');
     grunt.loadNpmTasks('grunt-contrib');
 
-    // Tasks that are available for executing
+    /** default includes: compiling js templates, 
+     *                   concating js files, 
+     *                   compiling less files
+     *
+     * default task is ran like this: $ grunt
+     */
     grunt.registerTask('default', 'jst:compile concat:dev recess:dev');
+
+    /**
+     * task includes: using jshint to lint js files
+     *                using recess to ling less files
+     *
+     * default task is ran like this: $ grunt lint-project
+     */
     grunt.registerTask('lint-project', 'recess:lint lint');
+
+    /**
+     * task includes: starting web server instance
+     *                starting liveReload
+     *                begin watching files and run all watch tasks
+     *
+     * default task is ran like this: $ grunt liveReload
+     */
     grunt.registerTask('liveReload', 'server reload:liveReload watch');
+
+    /**
+     * task includes: clean publish directory,
+     *                compile and minify less files - place in publish directory
+     *                minify js files - place in publish directory
+     *                copy assets and html to publish directory
+     *
+     * default task is ran like this: $ grunt prod-ready
+     */
     grunt.registerTask('prod-ready', 'clean:prod recess:prod min:prod copy:prod');
 };
