@@ -1,21 +1,22 @@
 /*global module:false*/
+'use strict';
+var path = require("path");
+
 module.exports = function (grunt) {
 
     var init = {
-
+        pkg: grunt.file.readJSON('package.json'),
         /**
          * Lints javascript files using jshint
          * - excluding templates from list because it is compiled src
          * - excluding global from list because it is output from concat
          * - excluding lib from list because I am only linting my own code.
          */
-        lint: {
+        jshint: {
             files: [
                 'js/!(templates|global).js',
                 'js/!(lib)/*.js'
-            ]
-        },
-        jshint: {
+            ],
             options: {
                 browser: true,
                 curly: true,
@@ -30,19 +31,19 @@ module.exports = function (grunt) {
                 sub: true,
                 eqnull: true,
                 strict: true,
-                trailing: true
-            },
-            globals: {
-                jQuery: true,
-                require: true,
-                define: true,
-                JST: true
+                trailing: true,
+                globals: {
+                    jQuery: true,
+                    require: true,
+                    define: true,
+                    JST: true
+                }
             }
         },
 
         /*
          * RECESS
-         * (grunt-recess)
+         * (grunt-less)
          * Default options
          * ----------------------
          *     compile: false             // Compiles CSS or LESS. Fixes white space and sort order.
@@ -57,39 +58,27 @@ module.exports = function (grunt) {
          *     stripColors: false         // Strip colors from the Terminal output
          *     zeroUnits: true            // Doesn't complain if you add units to values of 0
          */
-        recess: {
-            // Configuration for linting less/css files
-            lint: {
-                src: 'css/base.less',
-                options: {
-                    noIDs: false,
-                    noOverqualifying: false,
-                    strictPropertyOrder: false
-                }
-            },
-
+        less: {
             // Only need to compile files when working in development environment
             dev: {
-                src: 'css/base.less',
-                dest: 'css/base.css',
-                options: {
-                    compile: true
+                files: {
+                    'css/base.css': 'css/base.less'
                 }
             },
 
             // When compiling less files for production also minify them(compress)
             prod: {
-                src: 'css/base.less',
-                dest: 'publish/css/base.css',
+                files: {
+                    'publish/css/base.css': 'css/base.less'
+                },
                 options: {
-                    compile: true,
                     compress: true
                 }
             }
         },
 
         /**
-         * Only concatenate js files recess will handle css/less files.
+         * Only concatenate js files less will handle css/less files.
          * - excluding global from list because it is output from this task
          */
         concat: {
@@ -106,11 +95,15 @@ module.exports = function (grunt) {
         jst: {
             compile: {
                 options: {
-                    stripExtension: true,
-                    relativePath: "js/templates/"
+                    relativePath: "js/templates/",
+                    processName: function (src) {
+                        var relativePath = "js/templates/";
+                        relativePath = path.normalize(relativePath);
+                        return src.replace(/(\.[^.]+)$/, "").replace(relativePath, ""); // Remove file extensions and relativePath
+                    }
                 },
                 files: {
-                    'js/templates.js': ['js/templates/**/*.html']
+                    'js/templates.js': ['<%= jst.compile.options.relativePath %>/**/*.html']
                 }
             }
         },
@@ -131,44 +124,33 @@ module.exports = function (grunt) {
         },
 
         // Minify is only setup for prod not really needed for development
-        min: {
+        uglify: {
             prod: {
-                src: ['js/global.js'],
-                dest: 'publish/js/global.js'
+                files: {
+                    'publish/js/global.js': ['js/global.js']
+                }
             }
         },
 
         clean: {
-            prod: ['publish/**']
-        },
-
-        // Configuration for grunt-reload. Enabling live-reload within browser.
-        reload: {
-            liveReload: {
-                port: 35729, // default port for Live Reload browser plugins
-                liveReload: {
-                    apply_css_live: true,    // Won't actually work until grunt 0.4 is released
-                    apply_images_live: true  // Won't actually work until grunt 0.4 is released
-                }
-            }  
-        },
-        server: {
-            port: 9999
+            prod: {
+                src: ['publish/**']
+            }
         },
 
         // Watch to concat js files and concat/compile less(css) files
         watch: {
-            recess : {
+            less : {
                 files: 'css/**/*.less',
-                tasks: 'recess:dev reload'
+                tasks: ['less:dev']
             },
             concat : {
                 files: ['js/*/**/*.js', 'js/!(global).js'],
-                tasks: 'concat:dev reload'
+                tasks: ['concat:dev']
             },
             jst : {
                 files: 'js/templates/**/*.html',
-                tasks: 'jst:compile concat:dev reload'
+                tasks: ['jst', 'concat:dev']
             }
         }
     };
@@ -176,9 +158,15 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig(init);
 
-    grunt.loadNpmTasks('grunt-recess');
-    grunt.loadNpmTasks('grunt-reload');
-    grunt.loadNpmTasks('grunt-contrib');
+    grunt.loadNpmTasks('grunt-contrib-jst');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-devtools');
 
     /** default includes: compiling js templates, 
      *                   concating js files, 
@@ -186,24 +174,15 @@ module.exports = function (grunt) {
      *
      * default task is ran like this: $ grunt
      */
-    grunt.registerTask('default', 'jst:compile concat:dev recess:dev');
+    grunt.registerTask('default', ['jst', 'concat:dev', 'less:dev']);
 
     /**
      * task includes: using jshint to lint js files
-     *                using recess to ling less files
+     *                using less to lint less files
      *
      * default task is ran like this: $ grunt lint-project
      */
-    grunt.registerTask('lint-project', 'recess:lint lint');
-
-    /**
-     * task includes: starting web server instance
-     *                starting liveReload
-     *                begin watching files and run all watch tasks
-     *
-     * default task is ran like this: $ grunt liveReload
-     */
-    grunt.registerTask('liveReload', 'server reload:liveReload watch');
+    grunt.registerTask('lint-project', ['jshint']);
 
     /**
      * task includes: clean publish directory,
@@ -213,5 +192,5 @@ module.exports = function (grunt) {
      *
      * default task is ran like this: $ grunt prod-ready
      */
-    grunt.registerTask('prod-ready', 'clean:prod recess:prod min:prod copy:prod');
+    grunt.registerTask('prod-ready', ['clean:prod', 'less:prod', 'uglify:prod', 'copy:prod']);
 };
