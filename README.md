@@ -19,13 +19,17 @@ $ npm install
 ## Demonstrates
 
 * Lint JS files with jshint
-* Compile / Compress / lint LESS using RECESS
+* Compile / Compress LESS files into CSS
 * Concat / Compress JS
 * Precompile underscore files to JSTs
 * Copy source files into a publish directory
 * Run tasks when files being watched are saved
-* Uses grunt-reload to do live page reloads
+* Uses grunt devtools to interact with chrome
 
+## Release History
+
+* 2013-03-02    v0.2.0   Changed project to use Grunt 0.4.0.
+* 2012-11-11    v0.1.0   Initial project release used to demonstrate Grunt usage for MadJS November.
 
 [todoMVC]: http://addyosmani.github.com/todomvc
 [grunt]: https://github.com/gruntjs/grunt
