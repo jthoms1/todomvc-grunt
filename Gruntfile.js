@@ -14,8 +14,7 @@ module.exports = function (grunt) {
          */
         jshint: {
             files: [
-                'js/!(templates|global).js',
-                'js/!(lib)/*.js'
+                'src/js/!(templates).js'
             ],
             options: {
                 browser: true,
@@ -62,14 +61,14 @@ module.exports = function (grunt) {
             // Only need to compile files when working in development environment
             dev: {
                 files: {
-                    'css/base.css': 'css/base.less'
+                    'dev/css/base.css': 'src/css/base.less'
                 }
             },
 
             // When compiling less files for production also minify them(compress)
             prod: {
                 files: {
-                    'publish/css/base.css': 'css/base.less'
+                    'publish/css/base.css': 'src/css/base.less'
                 },
                 options: {
                     compress: true
@@ -77,14 +76,22 @@ module.exports = function (grunt) {
             }
         },
 
-        /**
-         * Only concatenate js files less will handle css/less files.
-         * - excluding global from list because it is output from this task
-         */
-        concat: {
-            dev: {
-                src: ['js/*/**/*.js', 'js/!(global).js'],
-                dest: 'js/global.js'
+        requirejs: {
+            compile: {
+                options: {
+                    name: "main",
+                    baseUrl: "./src/js",
+                    paths: {
+                        "jquery"                    : "../../components/jquery/jquery",
+                        "backbone"                  : "../../components/backbone-amd/backbone",
+                        "underscore"                : "../../components/underscore-amd/underscore",
+                        "lib/backbone/localstorage" : "../../components/backbone.localStorage/backbone.localStorage"
+                    },
+                    shim: {},
+                    optimize: "none",
+                    mainConfigFile: "src/js/main.js",
+                    out: "dev/js/global.js"
+                }
             }
         },
 
@@ -95,15 +102,16 @@ module.exports = function (grunt) {
         jst: {
             compile: {
                 options: {
-                    relativePath: "js/templates/",
+                    amd: true,
+                    relativePath: "src/js/templates/",
                     processName: function (src) {
-                        var relativePath = "js/templates/";
+                        var relativePath = "src/js/templates/";
                         relativePath = path.normalize(relativePath);
                         return src.replace(/(\.[^.]+)$/, "").replace(relativePath, ""); // Remove file extensions and relativePath
                     }
                 },
                 files: {
-                    'js/templates.js': ['<%= jst.compile.options.relativePath %>/**/*.html']
+                    'src/js/templates.js': ['<%= jst.compile.options.relativePath %>/**/*.html']
                 }
             }
         },
@@ -113,13 +121,27 @@ module.exports = function (grunt) {
          * - Will not copy css, js, templates because they are handled in other tasks
          */
         copy: {
+            dev: {
+                options: {
+                    basePath: "."
+                },
+                files: [
+                    {expand: true, cwd: 'src/', src: 'img/*', dest: 'dev/'},
+                    {expand: true, cwd: 'src/', src: 'index.html', dest: 'dev/'},
+                    {expand: true, cwd: 'components/html5shiv/src/', src: 'html5shiv.js', dest: 'dev/assets/'},
+                    {expand: true, cwd: 'components/requirejs/', src: 'require.js', dest: 'dev/assets/'}
+                ]
+            },
             prod: {
                 options: {
                     basePath: "."
                 },
-                files: {
-                    "publish/": ["img/*", "assets/**", "index.html"]
-                }
+                files: [
+                    {expand: true, cwd: 'src/', src: 'img/*', dest: 'publish/'},
+                    {expand: true, cwd: 'src/', src: 'index.html', dest: 'publish/'},
+                    {expand: true, cwd: 'components/html5shiv/src/', src: 'html5shiv.js', dest: 'publish/assets/'},
+                    {expand: true, cwd: 'components/requirejs/', src: 'require.js', dest: 'publish/assets/'}
+                ]
             }
         },
 
@@ -127,30 +149,30 @@ module.exports = function (grunt) {
         uglify: {
             prod: {
                 files: {
-                    'publish/js/global.js': ['js/global.js']
+                    'publish/js/global.js': ['dev/js/global.js']
                 }
             }
         },
 
         clean: {
             prod: {
-                src: ['publish/**']
+                src: ['publish']
             }
         },
 
         // Watch to concat js files and concat/compile less(css) files
         watch: {
             less : {
-                files: 'css/**/*.less',
+                files: 'src/css/**/*.less',
                 tasks: ['less:dev']
             },
-            concat : {
-                files: ['js/*/**/*.js', 'js/!(global).js'],
-                tasks: ['concat:dev']
+            requirejs : {
+                files: ['src/js/**/*.js'],
+                tasks: ['requirejs']
             },
             jst : {
-                files: 'js/templates/**/*.html',
-                tasks: ['jst', 'concat:dev']
+                files: 'src/js/templates/**/*.html',
+                tasks: ['jst', 'requirejs']
             }
         }
     };
@@ -163,18 +185,18 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-devtools');
 
     /** default includes: compiling js templates, 
-     *                   concating js files, 
-     *                   compiling less files
+     *                    compiling/concating js files with requirejs
+     *                    compiling less files
      *
      * default task is ran like this: $ grunt
      */
-    grunt.registerTask('default', ['jst', 'concat:dev', 'less:dev']);
+    grunt.registerTask('default', ['jst', 'requirejs', 'less:dev', "copy:dev"]);
 
     /**
      * task includes: using jshint to lint js files
@@ -187,10 +209,10 @@ module.exports = function (grunt) {
     /**
      * task includes: clean publish directory,
      *                compile and minify less files - place in publish directory
-     *                minify js files - place in publish directory
+     *                compiling/concating/minify js files with requirejs - place in publish directory
      *                copy assets and html to publish directory
      *
      * default task is ran like this: $ grunt prod-ready
      */
-    grunt.registerTask('prod-ready', ['clean:prod', 'less:prod', 'uglify:prod', 'copy:prod']);
+    grunt.registerTask('prod-ready', ['clean:prod', 'less:prod', 'requirejs', 'uglify:prod', 'copy:prod']);
 };

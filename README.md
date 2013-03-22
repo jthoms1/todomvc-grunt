@@ -20,7 +20,7 @@ $ npm install
 
 * Lint JS files with jshint
 * Compile / Compress LESS files into CSS
-* Concat / Compress JS
+* RequireJS / Compress JS
 * Precompile underscore files to JSTs
 * Copy source files into a publish directory
 * Run tasks when files being watched are saved
@@ -28,6 +28,7 @@ $ npm install
 
 ## Release History
 
+* 2013-03-02    v0.2.1   Added Bower and using requirejs for builds instead of concating files.
 * 2013-03-02    v0.2.0   Changed project to use Grunt 0.4.0.
 * 2012-11-11    v0.1.0   Initial project release used to demonstrate Grunt usage for MadJS November.
 
