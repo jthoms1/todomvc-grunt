@@ -106,7 +106,6 @@ module.exports = function (grunt) {
                     relativePath: "src/js/templates/",
                     processName: function (src) {
                         var relativePath = "src/js/templates/";
-                        relativePath = path.normalize(relativePath);
                         return src.replace(/(\.[^.]+)$/, "").replace(relativePath, ""); // Remove file extensions and relativePath
                     }
                 },
