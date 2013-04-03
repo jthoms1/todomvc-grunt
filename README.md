@@ -19,6 +19,7 @@ $ bower install   # Install front-end resources from bower into /components
 ```
 
 ## Directory structure
+<pre>
 |-- components - Project dependencies from Bower
 |-- dev - Directory containing development environment of site for testing.
 |-- publish - Contains production environment. Files are compressed.
@@ -31,19 +32,19 @@ $ bower install   # Install front-end resources from bower into /components
 `-- component.json - Defines dependencies for Bower
 `-- package.json - Describes current project and its dependencies
 `-- README.md - This file.
-
+</pre>
 ## Process
 This project is meant to be used as a template. Use what you can, remove what you
 don't want.
 
-Development occurs within the /src directory. While you are actively developing your project
-it is recommended that keep 'grunt watch' running in the background.  As grunt sees your
-file changes it will build the necessary files into the /dev directory.  So point your browser
+Development occurs within the `/src` directory. While you are actively developing your project
+it is recommended that keep `grunt watch` running in the background.  As grunt sees your
+file changes it will build the necessary files into the `/dev` directory.  So point your browser
 to the index file within /dev for see the results.
 
 After you have completed your changes and are ready to push to a production environment 
-execute the 'grunt prod-ready' command.  This will rebuild the file structure and uglify 
-the css and js files into the /publish directory. The publish directory should be ready to be pushed
+execute the `grunt prod-ready` command.  This will rebuild the file structure and uglify 
+the css and js files into the `/publish` directory. The publish directory should be ready to be pushed
 or ftped to your production environment.
 
 ## Demonstrates
