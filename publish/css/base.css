@@ -1,6 +1,6 @@
 html,body,button{padding:0;margin:0;font-size:100%;vertical-align:baseline;background:transparent;border:0;outline:0;}
 button{font-size:100%;vertical-align:baseline;font-family:inherit;color:inherit;-webkit-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;}
-body{font:14px 'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.4em;background:#eaeaea url('/img/bg.png');color:#4d4d4d;width:550px;margin:0 auto;-webkit-font-smoothing:antialiased;-moz-font-smoothing:antialiased;-ms-font-smoothing:antialiased;-o-font-smoothing:antialiased;font-smoothing:antialiased;}
+body{font:14px 'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.4em;background:#eaeaea url('../img/bg.png');color:#4d4d4d;width:550px;margin:0 auto;-webkit-font-smoothing:antialiased;-moz-font-smoothing:antialiased;-ms-font-smoothing:antialiased;-o-font-smoothing:antialiased;font-smoothing:antialiased;}
 #todoapp{background:#fff;background:rgba(255, 255, 255, 0.9);margin:130px 0 40px 0;border:1px solid #ccc;position:relative;border-top-left-radius:2px;border-top-right-radius:2px;box-shadow:0 2px 6px 0 rgba(0, 0, 0, 0.2),0 25px 50px 0 rgba(0, 0, 0, 0.15);}#todoapp:before{content:'';border-left:1px solid #f5d6d6;border-right:1px solid #f5d6d6;width:2px;position:absolute;top:0;left:40px;height:100%;}
 #todoapp input::-webkit-input-placeholder{font-style:italic;}
 #todoapp input:-moz-placeholder{font-style:italic;color:#a9a9a9;}

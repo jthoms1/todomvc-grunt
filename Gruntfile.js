@@ -54,23 +54,25 @@ module.exports = function (grunt) {
          */
         requirejs: {
             options: {
-                name: '../../<%= dir.bower_components %>/almond/almond',
+                name: '../../<%= dir.bower_components %>almond/almond',
                 include: "main",
                 baseUrl: "<%= dir.js_code %>",
                 paths: {
-                    "jquery"                    : "../../<%= dir.bower_components %>/jquery/jquery",
-                    "backbone"                  : "../../<%= dir.bower_components %>/backbone/backbone",
-                    "underscore"                : "../../<%= dir.bower_components %>/underscore/underscore",
-                    "lib/backbone/localstorage" : "../../<%= dir.bower_components %>/backbone.localStorage/backbone.localStorage"
+                    "jquery"                    : "../../<%= dir.bower_components %>jquery/jquery",
+                    "underscore"                : "../../<%= dir.bower_components %>underscore/underscore",
+                    "backbone"                  : "../../<%= dir.bower_components %>backbone/backbone",
+                    "lib/backbone/localstorage" : "../../<%= dir.bower_components %>backbone.localStorage/backbone.localStorage"
                 },
                 shim: {
                     "underscore" : {
                         exports: "_"
                     },
                     "backone": {
+                        deps: ['underscore', 'jquery'],
                         exports: "Backbone"
                     },
                     "lib/backbone/localstorage": {
+                        deps: ['backbone'],
                         exports: "Backbone"
                     }
                 },
@@ -128,8 +130,8 @@ module.exports = function (grunt) {
                     basePath: "."
                 },
                 files: [
-                    {expand: true, cwd: '<%= dir.src %>', src: 'img/*', dest: '<%= dir.dev %>'},
-                    {expand: true, cwd: '<%= dir.src %>', src: 'index.html', dest: '<%= dir.dev %>'},
+                    {expand: true, cwd: '<%= dir.source %>', src: 'img/*', dest: '<%= dir.dev %>'},
+                    {expand: true, cwd: '<%= dir.source %>', src: 'index.html', dest: '<%= dir.dev %>'},
                     {expand: true, cwd: '<%= dir.bower_components %>html5shiv/src/', src: 'html5shiv.js', dest: '<%= dir.dev %>assets/'},
                     {expand: true, cwd: '<%= dir.bower_components %>requirejs/', src: 'require.js', dest: '<%= dir.dev %>assets/'}
                 ]
@@ -139,20 +141,11 @@ module.exports = function (grunt) {
                     basePath: "."
                 },
                 files: [
-                    {expand: true, cwd: '<%= dir.src %>', src: 'img/*', dest: '<%= dir.prod %>'},
-                    {expand: true, cwd: '<%= dir.src %>', src: 'index.html', dest: '<%= dir.prod %>'},
+                    {expand: true, cwd: '<%= dir.source %>', src: 'img/*', dest: '<%= dir.prod %>'},
+                    {expand: true, cwd: '<%= dir.source %>', src: 'index.html', dest: '<%= dir.prod %>'},
                     {expand: true, cwd: '<%= dir.bower_components %>html5shiv/src/', src: 'html5shiv.js', dest: '<%= dir.prod %>assets/'},
                     {expand: true, cwd: '<%= dir.bower_components %>requirejs/', src: 'require.js', dest: '<%= dir.dev %>assets/'}
                 ]
-            }
-        },
-
-        // Minify is only setup for prod not really needed for development
-        uglify: {
-            prod: {
-                files: {
-                    '<%= dir.prod %>js/global.js': ['<%= dir.dev %>js/global.js']
-                }
             }
         },
 
@@ -173,7 +166,7 @@ module.exports = function (grunt) {
                 tasks: ['requirejs']
             },
             jst : {
-                files: '<%= dir.tpls %>/**/*.html',
+                files: '<%= dir.tpls %>**/*.html',
                 tasks: ['jst', 'requirejs']
             }
         }
@@ -197,7 +190,7 @@ module.exports = function (grunt) {
      *
      * default task is ran like this: $ grunt
      */
-    grunt.registerTask('default', ['jst', 'requirejs', 'less:dev', "copy:dev"]);
+    grunt.registerTask('default', ['jst', 'requirejs:dev', 'less:dev', "copy:dev"]);
 
     /**
      * task includes: using jshint to lint js files
@@ -215,5 +208,5 @@ module.exports = function (grunt) {
      *
      * default task is ran like this: $ grunt prod-ready
      */
-    grunt.registerTask('prod-ready', ['clean:prod', 'less:prod', 'requirejs', 'uglify:prod', 'copy:prod']);
+    grunt.registerTask('prod-ready', ['clean:prod', 'less:prod', 'requirejs:prod', 'copy:prod']);
 };
