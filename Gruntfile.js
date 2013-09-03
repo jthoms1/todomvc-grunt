@@ -67,7 +67,7 @@ module.exports = function (grunt) {
                     "underscore" : {
                         exports: "_"
                     },
-                    "backone": {
+                    "backbone": {
                         deps: ['underscore', 'jquery'],
                         exports: "Backbone"
                     },
