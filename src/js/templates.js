@@ -2,7 +2,7 @@ define(function(){
 
 this["JST"] = this["JST"] || {};
 
-this["JST"]["src/js/templates/stats"] = function(obj) {
+this["JST"]["stats"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -23,7 +23,7 @@ __p += '\n<button id="clear-completed">Clear completed (' +
 return __p
 };
 
-this["JST"]["src/js/templates/todos"] = function(obj) {
+this["JST"]["todos"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {

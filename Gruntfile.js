@@ -110,7 +110,7 @@ module.exports = function (grunt) {
                     amd: true,
                     relativePath: "<%= dir.tpls %>",
                     processName: function (src) {
-                        var relativePath = "<%= dir.js_code %>templates/";
+                        var relativePath = "src/js/templates/";
                         return src.replace(/(\.[^.]+)$/, "").replace(relativePath, ""); // Remove file extensions and relativePath
                     }
                 },

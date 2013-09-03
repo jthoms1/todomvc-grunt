@@ -4,7 +4,7 @@
   "dependencies": {
     "jquery": "~1.9.1",
     "backbone": "~1.0.0",
-    "underscore": "~1.4.4",
+    "underscore": "~1.5.1",
     "requirejs": "~2.1.5",
     "almond": "0.2.5",
     "html5shiv": "~3.6.2",
