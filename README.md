@@ -15,12 +15,12 @@ $ git clone git://github.com/jthoms1/todomvc-grunt.git
 # install dependent plugins
 $ cd todomvc-grunt
 $ npm install     # Install grunt dev dependencies into /node_modules
-$ bower install   # Install front-end resources from bower into /components
+$ bower install   # Install front-end resources from bower into /bower_components
 ```
 
 ## Directory structure
 <pre>
-|-- components - Project dependencies from Bower
+|-- bower_components - Project dependencies from Bower
 |-- dev - Directory containing development environment of site for testing.
 |-- publish - Contains production environment. Files are compressed.
 |-- src
@@ -29,7 +29,7 @@ $ bower install   # Install front-end resources from bower into /components
 |   |-- js - Source js files. Each file is an amd module
 |   `-- index.html - Base index page
 `-- Gruntfile.js - Gruntfile contains the build process for this setup
-`-- component.json - Defines dependencies for Bower
+`-- bower.json - Defines dependencies for Bower
 `-- package.json - Describes current project and its dependencies
 `-- README.md - This file.
 </pre>
@@ -51,7 +51,7 @@ or ftped to your production environment.
 
 * Lint JS files with jshint
 * Compile / Compress LESS files into CSS
-* RequireJS / Uglify JS
+* RequireJS
 * Precompile underscore files to JSTs
 * Copy source files into a publish directory
 * Run tasks when files being watched are saved
@@ -59,6 +59,7 @@ or ftped to your production environment.
 
 ## Release History
 
+* 2013-09-03    v0.2.2   Using requirejs shims and updated all dependencies.
 * 2013-03-02    v0.2.1   Added Bower and using requirejs for builds instead of concating files.
 * 2013-03-02    v0.2.0   Changed project to use Grunt 0.4.0.
 * 2012-11-11    v0.1.0   Initial project release used to demonstrate Grunt usage for MadJS November.
